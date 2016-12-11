@@ -64,7 +64,14 @@ RUN apt-get update -y -qq && apt-get install -y --no-install-recommends \
  && tar -xzf couchdb.tar.gz -C couchdb --strip-components=1 \
  && cd couchdb \
  # Build the release and install into /opt
- && ./configure --disable-docs \
+ && ./configure --disable-docs
+
+ENV SENTRY_DSN https://PUBLIC_KEY:PRIVATE_KEY@app.getsentry.com/PROJECT_ID
+
+COPY reltool.config /usr/src/couchdb/rel/reltool.config
+COPY rebar.config.script /usr/src/couchdb/rebar.config.script
+
+RUN cd /usr/src/couchdb \
  && make release \
  && mv /usr/src/couchdb/rel/couchdb /opt/ \
  # Cleanup build detritus
